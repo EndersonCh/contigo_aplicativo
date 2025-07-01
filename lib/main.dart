@@ -1,4 +1,4 @@
-import 'package:contigo_aplicativo/screens/InicioScreen.dart';
+import 'package:contigo_aplicativo/screens/inicio_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
 
-        body: Inicioscreen(),
+        body: InicioScreen(),
       ),
     );
   }

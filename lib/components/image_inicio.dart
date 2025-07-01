@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Imageinicio extends StatefulWidget {
-  const Imageinicio({super.key});
+class ImageInicio extends StatefulWidget {
+  const ImageInicio({super.key});
 
   @override
-  State<Imageinicio> createState() => _ImageinicioState();
+  State<ImageInicio> createState() => _ImageInicioState();
 }
 
-class _ImageinicioState extends State<Imageinicio> {
+class _ImageInicioState extends State<ImageInicio> {
   @override
   Widget build(BuildContext context) {
     return Padding(

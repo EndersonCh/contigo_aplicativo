@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Cabeceralogo extends StatelessWidget {
-  const Cabeceralogo({super.key});
+class CabeceraLogo extends StatelessWidget {
+  const CabeceraLogo({super.key});
 
   @override
   Widget build(BuildContext context) {
