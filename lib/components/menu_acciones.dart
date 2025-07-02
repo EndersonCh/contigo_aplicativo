@@ -1,4 +1,5 @@
 import 'package:contigo_aplicativo/components/accion.dart';
+import 'package:contigo_aplicativo/screens/encuentros_activos.dart';
 import 'package:contigo_aplicativo/screens/inicio_screen.dart';
 import 'package:contigo_aplicativo/screens/programar_encuentro.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _MenuAccionesState extends State<MenuAcciones> {
                 imagenAccion: "assets/images/art/accion2.png", 
                 titulo: "Encuentro Activos", 
                 textoContenido: "Actualiza cualquier cambio de planes",
-                destinoPantalla: InicioScreen()
+                destinoPantalla: EncuentrosActivos(),
           ),
           SizedBox(height: 15),
           Accion(

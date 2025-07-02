@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FormularioTyc extends StatefulWidget {
   final String tituloC;
   final String boxtex;
+  final TextEditingController controller;
 
   const FormularioTyc({
     required this.tituloC,
     required this.boxtex,
+    required this.controller,
     super.key});
 
   @override
@@ -29,6 +31,7 @@ class _FormularioTycState extends State<FormularioTyc> {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: TextField(
+              controller: widget.controller,
               maxLines: 1,
               maxLength: 50,
               decoration: InputDecoration(

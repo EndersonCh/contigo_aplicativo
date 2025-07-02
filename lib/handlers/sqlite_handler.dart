@@ -1,40 +1,51 @@
-import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
- class SqliteHandler {
-  Future<Database> getDb() async{
-    String databasePath= await getDatabasesPath();
-    String path =join(databasePath,'database_sqlite.db');
-
-    return await openDatabase(
+class SqliteHandler {
+  Future<Database> openMyDatabase() async{
+    final databasePath = await getDatabasesPath();
+    final path = join(databasePath,'mydatabase.db');
+    
+    return openDatabase(
       path,
-      version: 1,
-      onCreate: _onCreate
-      );
+      version:1,
+      onCreate: (db,version )async{
+        await db.execute('''
+          CREATE TABLE encuentros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ubicacion TEXT,
+            nombre TEXT,
+            perfil TEXT,
+            telefono TEXT)
+            ''');
+      },
+    );
   }
-  void _onCreate(Database db, int version) async{
-    await db.execute('''
-      CREATE TABLE encuentro(
-        idx TEXT PRIMARY KEY,
-        encuen_ubicaion TEXT,
-        encuen_nom TEXT,
-        encuen_perfiL TEXT,
-        encuen_tlf TEXT,
-      );
-    ''');
+  Future<void> addData({
+    required String ubicacion,
+    required String nombre,
+    required String perfil,
+    required String telefono,
+    }) async{
+    final db =await openMyDatabase();
+    await db.insert(
+      'encuentros',
+       {
+        'ubicacion':ubicacion,
+        'nombre':nombre,
+        'perfil': perfil,
+        'telefono':telefono,
+
+       },
+    conflictAlgorithm: ConflictAlgorithm.replace
+    );
+    await db.close();
   }
- }
- //extends StatefulWidget {
-//   const SqliteHandler({super.key});
-
-//   @override
-//   State<SqliteHandler> createState() => _SqliteHandlerState();
-// }
-
-// class _SqliteHandlerState extends State<SqliteHandler> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Placeholder();
-//   }
-//}
+  
+  Future<List<Map<String,dynamic>>> obtenerDatos() async{
+    final db =await openMyDatabase();
+    final data=await db.query('encuentros');
+    await db.close();
+    return data;
+  }
+}
