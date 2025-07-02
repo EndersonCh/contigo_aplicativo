@@ -3,6 +3,8 @@ import 'package:contigo_aplicativo/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  //para la base de datos 
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }
 

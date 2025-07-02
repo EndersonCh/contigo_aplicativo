@@ -1,5 +1,6 @@
 import 'package:contigo_aplicativo/components/accion.dart';
 import 'package:contigo_aplicativo/screens/inicio_screen.dart';
+import 'package:contigo_aplicativo/screens/programar_encuentro.dart';
 import 'package:flutter/material.dart';
 
 class MenuAcciones extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MenuAccionesState extends State<MenuAcciones> {
                 imagenAccion: "assets/images/art/arte2.png", 
                 titulo: "Programar un Encuentro", 
                 textoContenido: "Añade direcciones, Nombres, números telefonicos y mas",
-                destinoPantalla: InicioScreen()
+                destinoPantalla: ProgramarEncuentro()
           ),
           SizedBox(height: 15),
           Accion(

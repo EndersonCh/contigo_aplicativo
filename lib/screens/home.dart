@@ -1,7 +1,5 @@
-import 'package:contigo_aplicativo/components/accion.dart';
 import 'package:contigo_aplicativo/components/menu_acciones.dart';
 import 'package:contigo_aplicativo/components/scroll_horizontal.dart';
-import 'package:contigo_aplicativo/screens/inicio_screen.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
