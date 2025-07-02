@@ -24,14 +24,14 @@ class _ImagenCardState extends State<ImagenCard> {
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
               widget.imagenDirect,
-              width: 400,
-              height: 200,
+              width: 350,
+              height: 180,
               fit: BoxFit.cover,
             ),
           ),
           Positioned(
             left: 10,
-            bottom: 20,
+            bottom: 60,
             right: 16,
             child: Text(
               softWrap: true,

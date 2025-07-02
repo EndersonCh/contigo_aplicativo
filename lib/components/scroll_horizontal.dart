@@ -30,7 +30,7 @@ class _ScrollHorizontalState extends State<ScrollHorizontal> {
           texto: 'LLama a tu mamá'),
       ], 
       options: carousel.CarouselOptions(
-        height: 200,
+        height: 180,
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 10),
         enableInfiniteScroll: true,
@@ -38,7 +38,7 @@ class _ScrollHorizontalState extends State<ScrollHorizontal> {
         viewportFraction: 0.75,
       ));
   }
-}    
+}
 
     
     
