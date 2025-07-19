@@ -19,7 +19,6 @@ class _InicioScreenState extends State<InicioScreen> {
           
           children: [
             CabeceraLogo(),
-            
             ImageInicio(),
 
           ],
