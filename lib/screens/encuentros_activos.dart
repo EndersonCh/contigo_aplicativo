@@ -61,5 +61,5 @@ class _EncuentrosActivosState extends State<EncuentrosActivos> {
       ),
     );
     }
-   }
+  }
 }

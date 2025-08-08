@@ -10,6 +10,8 @@ class InicioScreen extends StatefulWidget {
 }
 
 class _InicioScreenState extends State<InicioScreen> {
+  bool mRegistro=false;
+  
   @override
   Widget build(BuildContext context) {
     return ListView (
