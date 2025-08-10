@@ -1,4 +1,5 @@
 import 'package:contigo_aplicativo/screens/home.dart';
+import 'package:contigo_aplicativo/service/foreground_service.dart';
 // import 'package:contigo_aplicativo/screens/inicio_screen.dart';
 //import 'package:contigo_aplicativo/screens/inicio_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,12 @@ Future<void> main() async {
 //  await dotenv.load();
   String supabaseUrl='https://wwizimtpwsbfrhneezqh.supabase.co';
   String supabaseAnonKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3aXppbXRwd3NiZnJobmVlenFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDkwOTAsImV4cCI6MjA3MDE4NTA5MH0._qfzCWAoBg_FZIrLnwfA20421aaR4kqy1G72HD4uQ_g';
-  print('Supabase URL: $supabaseUrl');
-  print('Supabase anon key: $supabaseAnonKey');
+ 
 await Supabase.initialize(
   url: supabaseUrl,
   anonKey: supabaseAnonKey,
 );
-
+  await ForegroundService.initialize();
   runApp(const MainApp());
 }
 
