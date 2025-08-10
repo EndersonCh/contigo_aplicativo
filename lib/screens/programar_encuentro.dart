@@ -1,5 +1,4 @@
 import 'package:contigo_aplicativo/components/formulario_tyc.dart';
-import 'package:contigo_aplicativo/handlers/sqlite_handler.dart';
 import 'package:flutter/material.dart';
 
 class ProgramarEncuentro extends StatefulWidget {
@@ -15,22 +14,7 @@ class _ProgramarEncuentroState extends State<ProgramarEncuentro> {
   final TextEditingController perfilC= TextEditingController();
   final TextEditingController tlfC= TextEditingController();
   //guarda los datos en SQLite
-  Future<void> guardarDatos() async{
-    final handler= SqliteHandler();
-    await handler.addData(
-      ubicacion: ubicC.text,
-      nombre: nombreC.text,
-      perfil: perfilC.text,
-      telefono: tlfC.text
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("¡Datos guardados correctamente!")),
-    );
-    ubicC.clear();
-    nombreC.clear();
-    perfilC.clear();
-    tlfC.clear();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +86,7 @@ class _ProgramarEncuentroState extends State<ProgramarEncuentro> {
                 SizedBox(height: 20,),
                 Center(
                   child: ElevatedButton(
-                    onPressed: guardarDatos, 
+                    onPressed: (){},
                     child: Text('Programar Encuentro')),
                 )
             ],

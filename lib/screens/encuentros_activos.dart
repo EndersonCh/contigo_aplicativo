@@ -1,4 +1,4 @@
-import 'package:contigo_aplicativo/handlers/sqlite_handler.dart';
+
 import 'package:flutter/material.dart';
 
 class EncuentrosActivos extends StatefulWidget {
@@ -11,18 +11,6 @@ class EncuentrosActivos extends StatefulWidget {
 class _EncuentrosActivosState extends State<EncuentrosActivos> {
   List<Map<String, dynamic>> listaEncuentros=[];
   @override
-  void initState(){
-    super.initState();
-    cargarEncuentros();
-  }
-
-  Future<void> cargarEncuentros() async{
-    final handler =SqliteHandler();
-    final datos =await handler.obtenerDatos();
-    setState(() {
-      listaEncuentros= datos;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
