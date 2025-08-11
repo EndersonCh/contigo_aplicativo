@@ -7,7 +7,6 @@ class ForegroundService {
 
   static bool get isRunning => _isRunning;
 
-  /// Inicializar el servicio en primer plano
   static Future<void> initialize() async {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
@@ -27,7 +26,7 @@ class ForegroundService {
         playSound: false,
       ),
       foregroundTaskOptions: const ForegroundTaskOptions(
-        interval: 5000, // Verificar cada 5 segundos
+        interval: 5000,
         isOnceEvent: false,
         autoRunOnBoot: true,
         allowWakeLock: true,
@@ -36,47 +35,37 @@ class ForegroundService {
     );
   }
 
-  /// Iniciar el servicio en primer plano
   static Future<bool> startService() async {
     if (_isRunning) {
-      print("⚠️ El servicio ya está ejecutándose");
+      print("El servicio ya está ejecutándose");
       return true;
     }
 
     try {
-      // Solicitar permisos de batería (opcional pero recomendado)
-      if (!await FlutterForegroundTask.canDrawOverlays) {
-        await FlutterForegroundTask.openSystemAlertWindowSettings();
-      }
-
-      // Inicializar servicio Bluetooth
       _bluetoothService = ESP32BluetoothService();
       
-      // Configurar callbacks
-      _bluetoothService!.onMessageReceived = (message) {
+      _bluetoothService!.msjRecividosDelESP32 = (message) {
         _updateNotification("Mensaje recibido: $message");
       };
       
-      _bluetoothService!.onConnectionStatusChanged = (isConnected) {
-        if (isConnected) {
-          _updateNotification("✅ ESP32 conectado - Escuchando...");
+      _bluetoothService!.estadoConexiconESP32 = (estaConectado) {
+        if (estaConectado) {
+          _updateNotification(" ESP32 conectado - Escuchando...");
         } else {
-          _updateNotification("🔍 Buscando ESP32...");
+          _updateNotification("Buscando ESP32...");
         }
       };
       
       _bluetoothService!.onError = (error) {
-        _updateNotification("❌ Error: $error");
+        _updateNotification(" Error: $error");
       };
 
-      // Inicializar Bluetooth
-      bool bluetoothInitialized = await _bluetoothService!.initialize();
+      bool bluetoothInitialized = await _bluetoothService!.inicializarBluetooth();
       if (!bluetoothInitialized) {
-        print("❌ No se pudo inicializar Bluetooth");
+        print(" No se pudo inicializar Bluetooth");
         return false;
       }
 
-      // Iniciar el servicio en primer plano
       bool serviceStarted = await FlutterForegroundTask.startService(
         notificationTitle: 'Contigo - Protección Activa',
         notificationText: 'Inicializando servicio...',
@@ -85,36 +74,33 @@ class ForegroundService {
 
       if (serviceStarted) {
         _isRunning = true;
-        print("✅ Servicio en primer plano iniciado");
+        print(" Servicio en primer plano iniciado");
         
-        // Comenzar búsqueda automática de ESP32
-        await _bluetoothService!.startAutoConnect();
+        await _bluetoothService!.autoConectarAlESP32();
         return true;
       } else {
-        print("❌ No se pudo iniciar el servicio en primer plano");
+        print("No se pudo iniciar el servicio en primer plano");
         return false;
       }
 
     } catch (e) {
-      print("❌ Error al iniciar servicio: $e");
+      print(" Error al iniciar servicio: $e");
       return false;
     }
   }
 
-  /// Detener el servicio en primer plano
   static Future<void> stopService() async {
     try {
-      await _bluetoothService?.disconnect();
+      await _bluetoothService?.disconnectarEsp32();
       await FlutterForegroundTask.stopService();
       _isRunning = false;
       _bluetoothService = null;
-      print("🛑 Servicio en primer plano detenido");
+      print(" Servicio en primer plano detenido");
     } catch (e) {
-      print("❌ Error al detener servicio: $e");
+      print(" Error al detener servicio: $e");
     }
   }
 
-  /// Actualizar la notificación
   static void _updateNotification(String text) {
     FlutterForegroundTask.updateService(
       notificationTitle: 'Contigo - Protección Activa',
@@ -122,32 +108,28 @@ class ForegroundService {
     );
   }
 
-  /// Callback del servicio en primer plano
   @pragma('vm:entry-point')
   static void _foregroundTaskCallback() {
-    // Esta función se ejecuta periódicamente en segundo plano
-    print("🔄 Servicio ejecutándose en segundo plano...");
     
-    // Verificar conexión Bluetooth
+    print(" Servicio ejecutándose en segundo plano...");
+    
     if (_bluetoothService != null) {
-      if (!_bluetoothService!.isConnected) {
-        print("🔍 Verificando conexión ESP32...");
-        _bluetoothService!.startAutoConnect();
+      if (!_bluetoothService!.estaConectado) {
+        print(" Verificando conexion ESP32...");
+        _bluetoothService!.autoConectarAlESP32();
       }
     }
   }
 
-  /// Obtener estado del servicio
   static Future<bool> isServiceRunning() async {
     return await FlutterForegroundTask.isRunningService;
   }
 
-  /// Reanudar el servicio si estaba ejecutándose
   static Future<void> resumeService() async {
     if (await isServiceRunning()) {
       _isRunning = true;
       _bluetoothService = ESP32BluetoothService();
-      print("🔄 Servicio reanudado");
+      print(" Servicio reanudado");
     }
   }
 }
