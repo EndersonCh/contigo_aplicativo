@@ -5,6 +5,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ESP32BluetoothService {
   static final ESP32BluetoothService _instance =
@@ -13,6 +14,7 @@ class ESP32BluetoothService {
   ESP32BluetoothService._internal();
 
   final supabase = Supabase.instance.client;
+  final storage = FlutterSecureStorage();
 
   BluetoothDevice? _dispositivoConectado;
   BluetoothCharacteristic? _canalDeMensajes;
@@ -186,16 +188,16 @@ class ESP32BluetoothService {
     try {
       print("Conectando a ${device.platformName}...");
       msjRecividosDelESP32?.call("Conectando a ${device.platformName}...");
-      
+
       await device.connect(timeout: Duration(seconds: 20));
 
-    await _escuchadorDeCambConexion?.cancel();
+      await _escuchadorDeCambConexion?.cancel();
 
       _dispositivoConectado = device;
       _bandDeConexion = true;
       _bandDeReconexion = false;
       print(" Conectado a ${device.platformName}");
-     
+
       await Future.delayed(Duration(milliseconds: 1000));
 
       msjRecividosDelESP32?.call(" Descubriendo servicios...");
@@ -245,7 +247,7 @@ class ESP32BluetoothService {
       }
 
       await _escuchadorDeCambConexion?.cancel();
-       _escuchadorDeCambConexion = device.connectionState.listen((
+      _escuchadorDeCambConexion = device.connectionState.listen((
         BluetoothConnectionState state,
       ) {
         print("Estado de conexión: $state");
@@ -322,28 +324,36 @@ class ESP32BluetoothService {
   }
 
   Future<void> _enviarMensajeSOSAutomatico() async {
-    try {
-      msjRecividosDelESP32?.call("Obteniendo ubicacion...");
-      Position posicion = await _obtenerUbicacion();
+    String? userId = await storage.read(key: 'user_id');
 
-      msjRecividosDelESP32?.call(" Enviando mensaje SOS...");
+    if (userId != null && userId.isNotEmpty) {
+      try {
+        msjRecividosDelESP32?.call("Obteniendo ubicacion...");
+        Position posicion = await _obtenerUbicacion();
 
-      final response = await supabase.functions.invoke(
-        'hyper-responder',
-        body: {
-          'latitud': posicion.latitude, 
-          'longitud': posicion.longitude,
-          'id':'839e13ed-7b0e-440f-b37d-05b07ae034bf',
+        msjRecividosDelESP32?.call(" Enviando mensaje SOS...");
+
+        final response = await supabase.functions.invoke(
+          'hyper-responder',
+          body: {
+            'latitud': posicion.latitude,
+            'longitud': posicion.longitude,
+            'id': userId,
           },
-      );
+        );
 
-      if (response.status == 200) {
-        msjRecividosDelESP32?.call(" SOS enviado automáticamente");
-      } else {
-        throw Exception('Error desde funcion SOS: ${response.data}');
+        if (response.status == 200) {
+          msjRecividosDelESP32?.call(" SOS enviado automáticamente");
+        } else {
+          throw Exception('Error desde funcion SOS: ${response.data}');
+        }
+      } catch (e) {
+        String errorMsg = "Error al enviar SOS automático: $e";
+        onError?.call(errorMsg);
+        msjRecividosDelESP32?.call("$errorMsg");
       }
-    } catch (e) {
-      String errorMsg = "Error al enviar SOS automático: $e";
+    } else {
+      String errorMsg = "Error! Accede a tu cuenta y a tu red de apoyo";
       onError?.call(errorMsg);
       msjRecividosDelESP32?.call("$errorMsg");
     }
@@ -443,7 +453,6 @@ class ESP32BluetoothService {
     _escuchadorDeDispositivo = null;
 
     print("Estado limpiado");
-
   }
 
   Future<bool> enviarMensajeAlESP32(String message) async {

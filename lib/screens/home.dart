@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -21,10 +22,11 @@ class _HomeState extends State<Home> {
   bool enviando = false;
   bool servicioActivoPrimerPlano = false;
   bool contigoConectado = false;
-  String estadoConexionBluetoo= "Inicializando...";
+  String estadoConexionBluetoo = "Inicializando...";
   String ultimoMensaje = "";
   List<String> listaMensajeEmergentes = [];
 
+  final storage = FlutterSecureStorage();
   final supabase = Supabase.instance.client;
   final ESP32BluetoothService _bluetoothService = ESP32BluetoothService();
 
@@ -32,7 +34,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     inicializar();
-    
   }
 
   Future<void> inicializar() async {
@@ -41,7 +42,6 @@ class _HomeState extends State<Home> {
 
       bool iniciaPrimerPlano = await iniciarServicioPrimerPlano();
       if (!iniciaPrimerPlano) {
-       
         return;
       }
 
@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
         if (mounted) {
           setState(() {
             contigoConectado = blutooConectado;
-            estadoConexionBluetoo= blutooConectado
+            estadoConexionBluetoo = blutooConectado
                 ? "Contigo Conectado"
                 : "Contigo Desconectado";
           });
@@ -96,14 +96,15 @@ class _HomeState extends State<Home> {
           );
         }
       };
-      bool bluetoothInitialized = await _bluetoothService.inicializarBluetooth();
+      bool bluetoothInitialized = await _bluetoothService
+          .inicializarBluetooth();
 
       if (bluetoothInitialized) {
         await _bluetoothService.autoConectarAlESP32();
         await Future.delayed(Duration(seconds: 3));
       } else {
         setState(() {
-          estadoConexionBluetoo= "Error Bluetooth";
+          estadoConexionBluetoo = "Error Bluetooth";
         });
       }
 
@@ -111,15 +112,15 @@ class _HomeState extends State<Home> {
       if (mounted) {
         setState(() {
           servicioActivoPrimerPlano = isRunning;
-          if (isRunning && estadoConexionBluetoo== "Inicializando...") {
-            estadoConexionBluetoo= " Servicio activo - Buscando Contigo";
+          if (isRunning && estadoConexionBluetoo == "Inicializando...") {
+            estadoConexionBluetoo = " Servicio activo - Buscando Contigo";
           }
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          estadoConexionBluetoo= "Error: $e";
+          estadoConexionBluetoo = "Error: $e";
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -140,7 +141,6 @@ class _HomeState extends State<Home> {
       await Permission.bluetoothScan.request();
 
       if (!await FlutterForegroundTask.canDrawOverlays) {
-
         bool userAccepted = await instruccionesDePermisos();
 
         if (userAccepted) {
@@ -154,7 +154,6 @@ class _HomeState extends State<Home> {
           throw Exception('Permiso de superposicion denegado por el usuario');
         }
       }
-
     } catch (e) {
       throw e;
     }
@@ -201,7 +200,6 @@ class _HomeState extends State<Home> {
     }
   }
 
-
   Future<void> alternarServicioSOS() async {
     try {
       if (servicioActivoPrimerPlano) {
@@ -213,7 +211,7 @@ class _HomeState extends State<Home> {
           setState(() {
             servicioActivoPrimerPlano = false;
             contigoConectado = false;
-            estadoConexionBluetoo= " Servicio detenido";
+            estadoConexionBluetoo = " Servicio detenido";
           });
         }
         ScaffoldMessenger.of(context).showSnackBar(
@@ -222,7 +220,6 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.orange,
           ),
         );
-
       } else {
         bool canStart = await verificarPermisos();
         if (!canStart) {
@@ -231,7 +228,7 @@ class _HomeState extends State<Home> {
 
         if (mounted) {
           setState(() {
-            estadoConexionBluetoo= " Iniciando servicio...";
+            estadoConexionBluetoo = " Iniciando servicio...";
           });
         }
 
@@ -241,7 +238,8 @@ class _HomeState extends State<Home> {
           if (mounted) {
             setState(() {
               servicioActivoPrimerPlano = true;
-              estadoConexionBluetoo= " Servicio activo - Iniciando Bluetooth...";
+              estadoConexionBluetoo =
+                  " Servicio activo - Iniciando Bluetooth...";
             });
           }
           ScaffoldMessenger.of(context).showSnackBar(
@@ -254,18 +252,18 @@ class _HomeState extends State<Home> {
 
           if (bluetoothReady) {
             setState(() {
-              estadoConexionBluetoo= "Buscando Bluetooth Contigo...";
+              estadoConexionBluetoo = "Buscando Bluetooth Contigo...";
             });
             await _bluetoothService.autoConectarAlESP32();
           } else {
             setState(() {
-              estadoConexionBluetoo= "Error Bluetooth";
+              estadoConexionBluetoo = "Error Bluetooth";
             });
           }
         } else {
           if (mounted) {
             setState(() {
-              estadoConexionBluetoo= " Error al iniciar";
+              estadoConexionBluetoo = " Error al iniciar";
             });
           }
           ScaffoldMessenger.of(context).showSnackBar(
@@ -279,7 +277,7 @@ class _HomeState extends State<Home> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          estadoConexionBluetoo= " Error: $e";
+          estadoConexionBluetoo = " Error: $e";
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
@@ -329,11 +327,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> monitorBluetoo() async {
-    String contigoC='';
-    if(contigoConectado){
-      contigoC='Bluetooth Contigo Esta conectado';
-    }else{
-      contigoC='Bluetooth Contigo NO Esta conectado';
+    String contigoC = '';
+    if (contigoConectado) {
+      contigoC = 'Bluetooth Contigo Esta conectado';
+    } else {
+      contigoC = 'Bluetooth Contigo NO Esta conectado';
     }
 
     String debugInfo =
@@ -368,39 +366,50 @@ class _HomeState extends State<Home> {
 
   Future<void> enviarMensajeSOS() async {
     setState(() => enviando = true);
-    try {
-      Position posicion = await obtenerUbicacion();
+    String? userId = await storage.read(key: 'user_id');
 
-      final response = await supabase.functions.invoke(
-        'hyper-responder',
-        body: {
-          'latitud': posicion.latitude,
-          'longitud': posicion.longitude,
-          'id':'839e13ed-7b0e-440f-b37d-05b07ae034bf',
-        },
-      );
+    if (userId != null && userId.isNotEmpty) {
+      try {
+        Position posicion = await obtenerUbicacion();
 
-      if (response.status != 200) {
-        throw Exception('Error desde función SOS: ${response.data}');
+        final response = await supabase.functions.invoke(
+          'hyper-responder',
+          body: {
+            'latitud': posicion.latitude,
+            'longitud': posicion.longitude,
+            'id': userId,
+          },
+        );
+
+        if (response.status != 200) {
+          throw Exception('Error desde función SOS: ${response.data}');
+        }
+
+        final data = response.data;
+        final mensaje = data['mensaje'] ?? 'Mensaje recibido';
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(mensaje)));
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      } finally {
+        setState(() => enviando = false);
       }
-
-      final data = response.data;
-      final mensaje = data['mensaje'] ?? 'Mensaje recibido';
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(mensaje)));
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
-    } finally {
-      setState(() => enviando = false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error! Accede a tu cuenta y a tu red de apoyo'),
+        ),
+      );
     }
   }
 
   Future<Position> obtenerUbicacion() async {
-    bool servicioActivoPrimerPlano = await Geolocator.isLocationServiceEnabled();
+    bool servicioActivoPrimerPlano =
+        await Geolocator.isLocationServiceEnabled();
     if (!servicioActivoPrimerPlano) {
       throw Exception('El servicio de ubicación está desactivado');
     }
@@ -438,9 +447,7 @@ class _HomeState extends State<Home> {
           Padding(
             padding: const EdgeInsets.only(right: 20, top: 20),
             child: IconButton(
-              onPressed: () {
-         
-              },
+              onPressed: () {},
               icon: Icon(Icons.person_sharp),
               iconSize: 30,
             ),
