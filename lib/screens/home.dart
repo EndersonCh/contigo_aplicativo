@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
           setState(() {
             contigoConectado = blutooConectado;
             estadoConexionBluetoo= blutooConectado
-                ? " Contigo Conectado"
+                ? "Contigo Conectado"
                 : "Contigo Desconectado";
           });
 
@@ -372,6 +372,7 @@ class _HomeState extends State<Home> {
         body: {
           'latitud': posicion.latitude,
           'longitud': posicion.longitude,
+          'id':'839e13ed-7b0e-440f-b37d-05b07ae034bf',
         },
       );
 
