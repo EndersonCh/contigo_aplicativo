@@ -309,7 +309,7 @@ class ESP32BluetoothService {
   }
 
   void _handleReceivedMessage(String message) {
-    msjRecividosDelESP32?.call("Contigo: $message");
+    // msjRecividosDelESP32?.call("Contigo: $message");
 
     if (message == 'SOS') {
       print('ESTAAAA ENTRAAAANDOOOOO');
