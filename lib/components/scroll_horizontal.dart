@@ -68,7 +68,7 @@ class _ScrollHorizontalState extends State<ScrollHorizontal> {
 
     final List<Widget> carouselItems = _consejos.map<Widget>((item) {
       return ImagenCard(
-        imagenDirect: item["url_image"] ?? 'assets/images/art/fondo4.jpg',
+        imagenDirect: item["assets/images/art/fondo2.jpg"],
         texto: item["text_consejo"] ?? "Bienvenido a ContigoApp",
       );
     }).toList();
