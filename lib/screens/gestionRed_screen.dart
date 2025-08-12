@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MiRedScreen extends StatefulWidget {
-  const MiRedScreen({super.key});
+class GestionredScreen extends StatefulWidget {
+  const GestionredScreen({super.key});
 
   @override
-  State<MiRedScreen> createState() => _MiRedScreenState();
+  State<GestionredScreen> createState() => _GestionredScreenState();
 }
 
-class _MiRedScreenState extends State<MiRedScreen> {
+class _GestionredScreenState extends State<GestionredScreen> {
   final supabase = Supabase.instance.client;
   final telefonoControl = TextEditingController();
   final nombreContactoControl = TextEditingController();

@@ -1,6 +1,8 @@
 import 'package:contigo_aplicativo/components/accion.dart';
 import 'package:contigo_aplicativo/screens/encuentros_activos.dart';
+import 'package:contigo_aplicativo/screens/gestionRed_screen.dart';
 import 'package:contigo_aplicativo/screens/inicio_screen.dart';
+import 'package:contigo_aplicativo/screens/pantalla_entrada_encuentros.dart';
 import 'package:contigo_aplicativo/screens/programar_encuentro.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +23,7 @@ class _MenuAccionesState extends State<MenuAcciones> {
                 imagenAccion: "assets/images/art/arte2.png", 
                 titulo: "Programar un Encuentro", 
                 textoContenido: "Añade direcciones, Nombres, números telefonicos y mas",
-                destinoPantalla: ProgramarEncuentro()
+                destinoPantalla: PantallaEntradaEncuentros()
           ),
           SizedBox(height: 15),
           Accion(
@@ -35,7 +37,7 @@ class _MenuAccionesState extends State<MenuAcciones> {
                 imagenAccion: "assets/images/art/accion2.png", 
                 titulo: "Mi Red de Apoyo", 
                 textoContenido: "Gestiona, añade y conecta con los tuyos",
-                destinoPantalla: InicioScreen()
+                destinoPantalla: PantallaEntradaEncuentros()
           ),
         ],
       );
