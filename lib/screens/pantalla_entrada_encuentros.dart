@@ -21,6 +21,9 @@ class _PantallaEntradaEncuentrosState extends State<PantallaEntradaEncuentros> {
         email: email,
         password: password,
       );
+      if(response.user!=null){
+        
+      }
       if (response.user == null) {
          ScaffoldMessenger.of(
           context,

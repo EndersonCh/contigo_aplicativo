@@ -57,20 +57,31 @@ class _GestionredScreenState extends State<GestionredScreen> {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
 
-    if (nombreContactoControl.text.isEmpty || telefonoControl.text.isEmpty) {
+    final nombre = nombreContactoControl.text.trim();
+    final telefono = telefonoControl.text.trim();
+
+    if (nombre.isEmpty || telefono.isEmpty) {
       setState(() => _mensajeError = "Complete todos los campos");
+      return;
+    }
+
+    final regexTelefono = RegExp(r'^\+\d{10,15}$');
+    if (!regexTelefono.hasMatch(telefono)) {
+      setState(() => _mensajeError =
+          "Formato de telefono invalido. Ejemplo: +584246666666");
       return;
     }
 
     try {
       await supabase.from("contactos_sos").insert({
-        'nombre': nombreContactoControl.text,
-        'telefono': telefonoControl.text,
+        'nombre': nombre,
+        'telefono': telefono,
         'user_id': userId,
       });
 
       setState(() {
         _mensajeExito = "Usuario agregado exitosamente";
+        _mensajeError = null;
         nombreContactoControl.clear();
         telefonoControl.clear();
       });
@@ -87,7 +98,9 @@ class _GestionredScreenState extends State<GestionredScreen> {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
 
-    if (nombreEliminarControl.text.isEmpty) {
+    final nombre = nombreEliminarControl.text.trim();
+
+    if (nombre.isEmpty) {
       setState(() => _mensajeError = "Ingrese un nombre para eliminar");
       return;
     }
@@ -97,10 +110,11 @@ class _GestionredScreenState extends State<GestionredScreen> {
           .from("contactos_sos")
           .delete()
           .eq("user_id", userId)
-          .eq("nombre", nombreEliminarControl.text);
+          .eq("nombre", nombre);
 
       setState(() {
         _mensajeExito = "Contacto eliminado exitosamente";
+        _mensajeError = null;
         nombreEliminarControl.clear();
       });
 
@@ -116,16 +130,17 @@ class _GestionredScreenState extends State<GestionredScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Ajusta pantalla cuando abre teclado
+      resizeToAvoidBottomInset: true, // Ajusta pantalla cuando aparece teclado
       appBar: AppBar(
-        title: const Text("Mi red de apoyo"),
-        backgroundColor: Colors.teal,
+        title: const Text("Mi red de apoyo",
+        style: TextStyle(color:Colors.white),
+        ),
+        backgroundColor: Color.fromARGB(255, 125, 37, 213),
       ),
-      body: SingleChildScrollView( // Permite scroll en toda la pantalla
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Lista de contactos
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _listaContactos.isEmpty
@@ -147,7 +162,7 @@ class _GestionredScreenState extends State<GestionredScreen> {
                                 vertical: 6, horizontal: 4),
                             child: ListTile(
                               leading: const CircleAvatar(
-                                backgroundColor: Colors.teal,
+                                backgroundColor: Color.fromARGB(255, 125, 37, 213),
                                 child: Icon(Icons.person, color: Colors.white),
                               ),
                               title: Text(
@@ -161,16 +176,12 @@ class _GestionredScreenState extends State<GestionredScreen> {
                         },
                       ),
             const SizedBox(height: 10),
-
-            // Mensajes de estado
             if (_mensajeError != null)
               Text(_mensajeError!, style: const TextStyle(color: Colors.red)),
             if (_mensajeExito != null)
               Text(_mensajeExito!, style: const TextStyle(color: Colors.green)),
 
             const Divider(height: 30),
-
-            // Agregar contacto
             const Text(
               "Agregar contacto",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -185,7 +196,7 @@ class _GestionredScreenState extends State<GestionredScreen> {
             TextField(
               controller: telefonoControl,
               decoration: const InputDecoration(
-                labelText: 'Teléfono',
+                labelText: 'Teléfono (+5842400000)',
                 prefixIcon: Icon(Icons.phone),
               ),
               keyboardType: TextInputType.phone,
@@ -196,14 +207,12 @@ class _GestionredScreenState extends State<GestionredScreen> {
               icon: const Icon(Icons.add),
               label: const Text("Agregar"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
+                backgroundColor: Color.fromARGB(255, 125, 37, 213),
                 foregroundColor: Colors.white,
               ),
             ),
 
             const Divider(height: 30),
-
-            // Eliminar contacto
             const Text(
               "Eliminar contacto",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
