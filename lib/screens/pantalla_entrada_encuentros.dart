@@ -22,7 +22,10 @@ class _PantallaEntradaEncuentrosState extends State<PantallaEntradaEncuentros> {
         password: password,
       );
       if(response.user!=null){
-        
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => GestionredScreen()),
+        );
       }
       if (response.user == null) {
          ScaffoldMessenger.of(
