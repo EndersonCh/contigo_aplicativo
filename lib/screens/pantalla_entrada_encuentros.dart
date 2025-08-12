@@ -21,16 +21,8 @@ class _PantallaEntradaEncuentrosState extends State<PantallaEntradaEncuentros> {
         email: email,
         password: password,
       );
-      if (response.user != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Login exitoso!')));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => GestionredScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(
+      if (response.user == null) {
+         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Error al iniciar sesión')));
       }
@@ -57,14 +49,7 @@ Widget build(BuildContext context) {
                   child: Column(
                     children: [
                       SizedBox(height: 40),
-                      // Center(
-                      //   child: Image.asset(
-                      //     'assets/conexa.png',
-                      //     height: 350,
-                      //     fit: BoxFit.contain,
-                      //   ),
-                      // ),
-
+        
                       SizedBox(height: 18),
                       mostrarReg
                           ? RegistrarUser()

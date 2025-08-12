@@ -16,7 +16,7 @@ class _GestionredScreenState extends State<GestionredScreen> {
 
   bool _isLoading = false;
   String? _mensajeError;
-  String? _mensajeExicto;
+  String? _mensajeExito;
   List<dynamic> _listaContactos = [];
 
   @override
@@ -27,79 +27,88 @@ class _GestionredScreenState extends State<GestionredScreen> {
 
   Future<void> _cargarRed() async {
     final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
     setState(() {
       _isLoading = true;
       _mensajeError = null;
-      _mensajeExicto = null;
+      _mensajeExito = null;
     });
-    if (userId == null) {
-      return;
-    }
+
     try {
       final data = await supabase
           .from("contactos_sos")
           .select()
           .eq("user_id", userId);
+
       setState(() {
-        _listaContactos = data as List;
+        _listaContactos = data;
       });
     } catch (e) {
       setState(() {
         _mensajeError = "Error cargando contactos";
-        _mensajeExicto = null;
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _agregarRed() async {
     final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
 
-    if (userId == null) {
+    if (nombreContactoControl.text.isEmpty || telefonoControl.text.isEmpty) {
+      setState(() => _mensajeError = "Complete todos los campos");
       return;
     }
+
     try {
       await supabase.from("contactos_sos").insert({
-        'nombre': nombreContactoControl,
-        'telefono': telefonoControl,
+        'nombre': nombreContactoControl.text,
+        'telefono': telefonoControl.text,
         'user_id': userId,
       });
+
       setState(() {
-        _mensajeExicto = "Usuario agregado exitosamente";
-        _cargarRed();
+        _mensajeExito = "Usuario agregado exitosamente";
+        nombreContactoControl.clear();
+        telefonoControl.clear();
       });
+
+      _cargarRed();
     } catch (e) {
       setState(() {
-        _mensajeError = "Fallo agregando usuario ";
-        _mensajeExicto = null;
+        _mensajeError = "Fallo agregando usuario";
       });
     }
   }
 
   Future<void> _eliminarDeRed() async {
     final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
 
-    if (userId == null) {
+    if (nombreEliminarControl.text.isEmpty) {
+      setState(() => _mensajeError = "Ingrese un nombre para eliminar");
       return;
     }
+
     try {
       await supabase
           .from("contactos_sos")
           .delete()
-          .eq("nombre", nombreEliminarControl);
+          .eq("user_id", userId)
+          .eq("nombre", nombreEliminarControl.text);
 
       setState(() {
-        _mensajeExicto = "Cotacto eliminado exictosamente";
-        _cargarRed();
+        _mensajeExito = "Contacto eliminado exitosamente";
+        nombreEliminarControl.clear();
       });
+
+      _cargarRed();
     } catch (e) {
       setState(() {
         _mensajeError =
-            "Fallo eliminado cotacto, verifique que el nombre este bien escrito ";
-        _mensajeExicto = null;
+            "Fallo eliminando contacto. Verifique que el nombre esté bien escrito.";
       });
     }
   }
@@ -107,106 +116,114 @@ class _GestionredScreenState extends State<GestionredScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      resizeToAvoidBottomInset: true, // Ajusta pantalla cuando abre teclado
+      appBar: AppBar(
+        title: const Text("Mi red de apoyo"),
+        backgroundColor: Colors.teal,
+      ),
+      body: SingleChildScrollView( // Permite scroll en toda la pantalla
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Mi red de apoyo"),
-
+            // Lista de contactos
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _mensajeError != null
-                ? Center(
-                    child: Text(
-                      _mensajeExicto!,
-                      style: const TextStyle(color: Colors.green),
-                    ),
-                  )
                 : _listaContactos.isEmpty
-                ? Center(
-                    child: Text(
-                      "No hay contactos agregados",
-                      style: const TextStyle(color: Colors.green),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: _listaContactos.length,
-                    itemBuilder: (context, i) {
-                      final contacto = _listaContactos[i];
-                      return ListTile(
-                        leading: const Icon(Icons.person),
-                        title: Text(contacto['nombre']),
-                        subtitle: Text(contacto['telefono']),
-                      );
-                    },
-                  ),
-            const SizedBox(height: 16),
+                    ? const Center(
+                        child: Text(
+                          "No hay contactos agregados",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _listaContactos.length,
+                        itemBuilder: (context, i) {
+                          final contacto = _listaContactos[i];
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 4),
+                            child: ListTile(
+                              leading: const CircleAvatar(
+                                backgroundColor: Colors.teal,
+                                child: Icon(Icons.person, color: Colors.white),
+                              ),
+                              title: Text(
+                                contacto['nombre'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(contacto['telefono']),
+                            ),
+                          );
+                        },
+                      ),
+            const SizedBox(height: 10),
 
-            Text("Agregar contacto"),
+            // Mensajes de estado
+            if (_mensajeError != null)
+              Text(_mensajeError!, style: const TextStyle(color: Colors.red)),
+            if (_mensajeExito != null)
+              Text(_mensajeExito!, style: const TextStyle(color: Colors.green)),
+
+            const Divider(height: 30),
+
+            // Agregar contacto
+            const Text(
+              "Agregar contacto",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             TextField(
               controller: nombreContactoControl,
               decoration: const InputDecoration(
-                labelText: 'Nombre de Contacto',
+                labelText: 'Nombre',
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             TextField(
               controller: telefonoControl,
-              decoration: const InputDecoration(labelText: 'Telefono'),
+              decoration: const InputDecoration(
+                labelText: 'Teléfono',
+                prefixIcon: Icon(Icons.phone),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              onPressed: _isLoading ? null : _agregarRed,
+              icon: const Icon(Icons.add),
+              label: const Text("Agregar"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                foregroundColor: Colors.white,
+              ),
             ),
 
-            if (_mensajeError != null)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  _mensajeError!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            if (_mensajeExicto != null)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  _mensajeExicto!,
-                  style: const TextStyle(color: Colors.green),
-                ),
-              ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _agregarRed,
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Agregar Contacto"),
+            const Divider(height: 30),
+
+            // Eliminar contacto
+            const Text(
+              "Eliminar contacto",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            Text("Eliminar Contacto"),
             TextField(
               controller: nombreEliminarControl,
               decoration: const InputDecoration(
-                labelText: 'Nombre de Contacto ',
+                labelText: 'Nombre a eliminar',
+                prefixIcon: Icon(Icons.delete),
               ),
             ),
-            if (_mensajeError != null)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  _mensajeError!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            if (_mensajeExicto != null)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  _mensajeExicto!,
-                  style: const TextStyle(color: Colors.green),
-                ),
-              ),
-            const SizedBox(height: 16),
-            ElevatedButton(
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
               onPressed: _isLoading ? null : _eliminarDeRed,
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Eliminar Contacto"),
+              icon: const Icon(Icons.delete),
+              label: const Text("Eliminar"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ),
