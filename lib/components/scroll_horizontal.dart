@@ -38,37 +38,37 @@ class _ScrollHorizontalState extends State<ScrollHorizontal> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
-    } else if (_consejos.isEmpty) {
-      return carousel.CarouselSlider(
-        items: [
-          ImagenCard(
-            imagenDirect: 'assets/images/art/art4.jpg',
-            texto: 'Siempre Avisa a tu grupo de confianza donde estas',
-          ),
-          ImagenCard(
-            imagenDirect: 'assets/images/art/fondo2.png',
-            texto:
-                'Si te sintes en una situacion vulnerable pulsa el boton dos segundos',
-          ),
-          ImagenCard(
-            imagenDirect: 'assets/images/art/fondo4.jpg',
-            texto: 'Crea tu red de apoyo, no estas solo(a)',
-          ),
-        ],
-        options: carousel.CarouselOptions(
-          height: 180,
-          autoPlay: true,
-          autoPlayInterval: const Duration(seconds: 10),
-          enableInfiniteScroll: true,
-          enlargeCenterPage: true,
-          viewportFraction: 0.75,
-        ),
-      );
+    // } else if (_consejos.isEmpty) {
+    //   return carousel.CarouselSlider(
+    //     items: [
+    //       ImagenCard(
+    //         imagenDirect: 'assets/images/art/art4.jpg',
+    //         texto: 'Siempre Avisa a tu grupo de confianza donde estas',
+    //       ),
+    //       ImagenCard(
+    //         imagenDirect: 'assets/images/art/fondo2.png',
+    //         texto:
+    //             'Si te sintes en una situacion vulnerable pulsa el boton dos segundos',
+    //       ),
+    //       ImagenCard(
+    //         imagenDirect: 'assets/images/art/fondo4.jpg',
+    //         texto: 'Crea tu red de apoyo, no estas solo(a)',
+    //       ),
+    //     ],
+    //     options: carousel.CarouselOptions(
+    //       height: 180,
+    //       autoPlay: true,
+    //       autoPlayInterval: const Duration(seconds: 10),
+    //       enableInfiniteScroll: true,
+    //       enlargeCenterPage: true,
+    //       viewportFraction: 0.75,
+    //     ),
+    //   );
     }
 
     final List<Widget> carouselItems = _consejos.map<Widget>((item) {
       return ImagenCard(
-        imagenDirect: item["assets/images/art/fondo2.jpg"],
+        imagenDirect: item["url_image"],
         texto: item["text_consejo"] ?? "Bienvenido a ContigoApp",
       );
     }).toList();

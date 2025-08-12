@@ -22,7 +22,7 @@ class _ImagenCardState extends State<ImagenCard> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
+            child: Image.network(
               widget.imagenDirect,
               width: 350,
               height: 180,
@@ -40,7 +40,7 @@ class _ImagenCardState extends State<ImagenCard> {
               widget.texto,
               style: TextStyle(
                 color: const Color.fromARGB(255, 243, 242, 245),
-                fontSize: 20,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(
