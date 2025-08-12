@@ -444,14 +444,14 @@ class _HomeState extends State<Home> {
           child: Image.asset('assets/images/brand/logo1.png', height: 25),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20),
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.person_sharp),
-              iconSize: 30,
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 20, top: 20),
+          //   child: IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(Icons.person_sharp),
+          //     iconSize: 30,
+          //   ),
+          // ),
         ],
       ),
       body: Stack(

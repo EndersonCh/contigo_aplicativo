@@ -128,17 +128,7 @@ class InstruccionesScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 16, color: Colors.black87),
                   ),
 
-                  const SizedBox(height: 24),
-                  const Text(
-                    '¿Quieres que integre este texto formateado en la pantalla con el degradado y la imagen fija que hicimos antes?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
-                    ),
-                  ),
-
-                  const SizedBox(height: 140),
+                  const SizedBox(height: 400),
                 ],
               ),
             ),

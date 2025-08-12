@@ -44,8 +44,9 @@ class _VerredScreenState extends State<VerredScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Mis Contactos",
-          style: TextStyle(color: Colors.white),
+          "Mi Red de apoyo",
+          style: TextStyle(color: Colors.white,
+          ),
         ),
         backgroundColor: const Color.fromARGB(255, 125, 37, 213),
       ),
