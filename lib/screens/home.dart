@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:contigo_aplicativo/components/menu_acciones.dart';
 import 'package:contigo_aplicativo/components/scroll_horizontal.dart';
 import 'package:contigo_aplicativo/service/bluetooth_service.dart';
@@ -30,6 +32,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     inicializar();
+    
   }
 
   Future<void> inicializar() async {
@@ -74,7 +77,7 @@ class _HomeState extends State<Home> {
               backgroundColor:
                   message.contains('SOS') || message.contains('EMERGENCIA')
                   ? Colors.red
-                  : message.contains('✅')
+                  : message.contains(' ')
                   ? Colors.green
                   : Colors.blue,
               duration: Duration(seconds: 3),
@@ -97,6 +100,7 @@ class _HomeState extends State<Home> {
 
       if (bluetoothInitialized) {
         await _bluetoothService.autoConectarAlESP32();
+        await Future.delayed(Duration(seconds: 3));
       } else {
         setState(() {
           estadoConexionBluetoo= "Error Bluetooth";
@@ -435,7 +439,7 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.only(right: 20, top: 20),
             child: IconButton(
               onPressed: () {
-                // Acción para presionar el icono
+         
               },
               icon: Icon(Icons.person_sharp),
               iconSize: 30,
@@ -448,8 +452,6 @@ class _HomeState extends State<Home> {
           ListView(
             children: [
               SizedBox(height: 20),
-
-              // acciones:
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 padding: EdgeInsets.all(16),
@@ -533,7 +535,6 @@ class _HomeState extends State<Home> {
                       ],
                     ),
 
-                   //mONITOREO
                     if (servicioActivoPrimerPlano) ...[
                       SizedBox(height: 12),
                       Row(
@@ -607,7 +608,6 @@ class _HomeState extends State<Home> {
             ],
           ),
 
-        //boton del sos
           Positioned(
             bottom: 10,
             left: 0,

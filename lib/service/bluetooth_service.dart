@@ -30,7 +30,6 @@ class ESP32BluetoothService {
   static const String CHARACTERISTIC_UUID =
       "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
-  // Callbacks para notificar eventos
   Function(String)? msjRecividosDelESP32;
   Function(bool)? estadoConexiconESP32;
   Function(String)? onError;
@@ -417,7 +416,7 @@ class ESP32BluetoothService {
   }
 
   Future<void> _cleanup() async {
-    print("🧹 Limpiando estado...");
+    print(" Limpiando estado...");
     _temporizadorReconexion?.cancel();
     _temporizadorEscaneo?.cancel();
 
