@@ -218,7 +218,7 @@ class _HomeState extends State<Home> {
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Servicio de protección desactivado'),
+            content: Text('Servicio de proteccion desactivado'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -246,7 +246,7 @@ class _HomeState extends State<Home> {
           }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Servicio de protección activado'),
+              content: Text('Servicio de proteccion activado'),
               backgroundColor: Colors.green,
             ),
           );
@@ -495,7 +495,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Text(
                                 servicioActivoPrimerPlano
-                                    ? "Protección Activa"
+                                    ? "Proteccion Activa"
                                     : "Protección Inactiva",
                                 style: TextStyle(
                                   fontSize: 16,
