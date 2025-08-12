@@ -1,35 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final supabase = Supabase.instance.client;
   final emailControl = TextEditingController();
   final claveControl = TextEditingController();
+
   bool _isLoading = false;
   String? _mensajeError;
+  String? _mensajeExicto;
 
-  Future<void> _login() async {
+  Future<void> _signUp() async {
     setState(() {
       _isLoading = true;
       _mensajeError = null;
+      _mensajeExicto = null;
     });
 
     try {
-      final data = await supabase.auth.signInWithPassword(
+      final data = await supabase.auth.signUp(
         email: emailControl.text.trim(),
         password: claveControl.text.trim(),
       );
 
-      if (data.session == null) {
+      if (data.user != null) {
         setState(() {
-          _mensajeError = "Datos invalidos";
+          _mensajeExicto = "Cuenta creada. Revisa tu correo para confirmar.";
         });
       }
     } catch (e) {
@@ -68,12 +71,20 @@ class _LoginState extends State<LoginScreen> {
                   style: const TextStyle(color: Colors.red),
                 ),
               ),
+            if (_mensajeExicto != null)
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  _mensajeExicto!,
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _isLoading ? null : _login,
+              onPressed: _isLoading ? null : _signUp,
               child: _isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Iniciar sesión"),
+                  : const Text("Crear cuenta"),
             ),
           ],
         ),
