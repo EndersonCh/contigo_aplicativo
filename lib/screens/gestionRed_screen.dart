@@ -67,8 +67,10 @@ class _GestionredScreenState extends State<GestionredScreen> {
 
     final regexTelefono = RegExp(r'^\+\d{10,15}$');
     if (!regexTelefono.hasMatch(telefono)) {
-      setState(() => _mensajeError =
-          "Formato de telefono invalido. Ejemplo: +584246666666");
+      setState(
+        () => _mensajeError =
+            "Formato de telefono invalido. Ejemplo: +584246666666",
+      );
       return;
     }
 
@@ -132,8 +134,9 @@ class _GestionredScreenState extends State<GestionredScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true, // Ajusta pantalla cuando aparece teclado
       appBar: AppBar(
-        title: const Text("Mi red de apoyo",
-        style: TextStyle(color:Colors.white),
+        title: const Text(
+          "Mi red de apoyo",
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color.fromARGB(255, 125, 37, 213),
       ),
@@ -144,37 +147,38 @@ class _GestionredScreenState extends State<GestionredScreen> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _listaContactos.isEmpty
-                    ? const Center(
-                        child: Text(
-                          "No hay contactos agregados",
-                          style: TextStyle(fontSize: 16),
+                ? const Center(
+                    child: Text(
+                      "No hay contactos agregados",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _listaContactos.length,
+                    itemBuilder: (context, i) {
+                      final contacto = _listaContactos[i];
+                      return Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 6,
+                          horizontal: 4,
                         ),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _listaContactos.length,
-                        itemBuilder: (context, i) {
-                          final contacto = _listaContactos[i];
-                          return Card(
-                            elevation: 2,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 4),
-                            child: ListTile(
-                              leading: const CircleAvatar(
-                                backgroundColor: Color.fromARGB(255, 125, 37, 213),
-                                child: Icon(Icons.person, color: Colors.white),
-                              ),
-                              title: Text(
-                                contacto['nombre'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(contacto['telefono']),
-                            ),
-                          );
-                        },
-                      ),
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: Color.fromARGB(255, 125, 37, 213),
+                            child: Icon(Icons.person, color: Colors.white),
+                          ),
+                          title: Text(
+                            contacto['nombre'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(contacto['telefono']),
+                        ),
+                      );
+                    },
+                  ),
             const SizedBox(height: 10),
             if (_mensajeError != null)
               Text(_mensajeError!, style: const TextStyle(color: Colors.red)),
@@ -184,20 +188,28 @@ class _GestionredScreenState extends State<GestionredScreen> {
             const Divider(height: 30),
             const Text(
               "Agregar contacto",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
+            const SizedBox(height: 8),
             TextField(
               controller: nombreContactoControl,
               decoration: const InputDecoration(
                 labelText: 'Nombre',
                 prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
               ),
             ),
+            const SizedBox(height: 8),
             TextField(
               controller: telefonoControl,
               decoration: const InputDecoration(
                 labelText: 'Teléfono (+5842400000)',
                 prefixIcon: Icon(Icons.phone),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
               ),
               keyboardType: TextInputType.phone,
             ),
@@ -215,13 +227,17 @@ class _GestionredScreenState extends State<GestionredScreen> {
             const Divider(height: 30),
             const Text(
               "Eliminar contacto",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
+            const SizedBox(height: 8),
             TextField(
               controller: nombreEliminarControl,
               decoration: const InputDecoration(
                 labelText: 'Nombre a eliminar',
                 prefixIcon: Icon(Icons.delete),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
               ),
             ),
             const SizedBox(height: 8),
