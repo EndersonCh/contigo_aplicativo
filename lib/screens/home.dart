@@ -17,8 +17,12 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+enum BtEstado { desconectado, buscando, conectando, conectado, error }
 
 class _HomeState extends State<Home> {
+  
+  BtEstado estadoBT = BtEstado.desconectado;
+
   bool enviando = false;
   bool servicioActivoPrimerPlano = false;
   bool contigoConectado = false;
@@ -62,6 +66,16 @@ class _HomeState extends State<Home> {
                 duration: Duration(seconds: 3),
               ),
             );
+          }
+          if (!servicioActivoPrimerPlano) {
+            ForegroundService.startService().then((started) {
+              if (started) {
+                setState(() {
+                  servicioActivoPrimerPlano = true;
+                  estadoConexionBluetoo = "Protección Activa";
+                });
+              }
+            });
           }
         }
       };
@@ -465,16 +479,12 @@ class _HomeState extends State<Home> {
                 decoration: BoxDecoration(
                   color: contigoConectado
                       ? Colors.green[50]
-                      : servicioActivoPrimerPlano
-                      ? Colors.yellow[50]
                       : Colors.red[50],
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: contigoConectado
-                        ? Colors.green
-                        : servicioActivoPrimerPlano
-                        ? Colors.orange
-                        : Colors.red,
+                          ? Colors.green
+                          : Colors.red,
                     width: 1,
                   ),
                 ),
@@ -532,13 +542,13 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-                        Switch(
-                          value: servicioActivoPrimerPlano,
-                          onChanged: (value) => alternarServicioSOS(),
-                          activeColor: contigoConectado
-                              ? Colors.green
-                              : Colors.orange,
-                        ),
+                        // Switch(
+                        //   value: servicioActivoPrimerPlano,
+                        //   onChanged: (value) => alternarServicioSOS(),
+                        //   activeColor: contigoConectado
+                        //       ? Colors.green
+                        //       : Colors.orange,
+                        // ),
                       ],
                     ),
 
